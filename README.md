@@ -1,21 +1,18 @@
 # Seoul Bike Demand Prediction Using Multiple Linear Regression
 
-## Project Overview
+## Overview
 
-This project develops and evaluates a multiple linear regression model for predicting hourly bicycle rental demand in Seoul.
+This project develops and evaluates a Multiple Linear Regression model to predict hourly bike rental demand in Seoul using weather, seasonal, temporal, and operational variables.
 
-The analysis examines how rental demand is associated with time, weather, season, holiday status, day of the week, and whether the bike-sharing system was functioning.
-
-The project includes:
+The analysis includes:
 
 - Data cleaning and preprocessing
-- Exploratory data analysis
-- Multiple linear regression
+- Exploratory Data Analysis (EDA)
+- Multiple Linear Regression
 - Chronological train-test evaluation
 - Statistical significance testing using p-values
-- Coefficient and confidence-interval interpretation
-- Regression diagnostics
-- A complete written report
+- Model diagnostics and interpretation
+- Business insights and recommendations
 
 ---
 
@@ -29,33 +26,20 @@ The project includes:
 
 The project uses the **Seoul Bike Sharing Demand** dataset from the UCI Machine Learning Repository.
 
-The dataset contains **8,760 hourly observations** with information about:
+**Dataset Characteristics**
 
-- Rented bike count
-- Hour of the day
-- Temperature
-- Humidity
-- Wind speed
-- Visibility
-- Dew-point temperature
-- Solar radiation
-- Rainfall
-- Snowfall
-- Season
-- Holiday status
-- Functioning-day status
+- 8,760 hourly observations
+- 13 predictor variables
+- No missing values
+- Regression problem
 
 ### Target Variable
-
-The regression target is:
 
 ```text
 Rented Bike Count
 ```
 
 ### Dataset Source
-
-UCI Machine Learning Repository:
 
 https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
 
@@ -64,7 +48,7 @@ https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
 ## Project Structure
 
 ```text
-seoul-bike-demand-regression/
+seoul-bike-demand-prediction/
 │
 ├── README.md
 ├── LICENSE
@@ -73,16 +57,14 @@ seoul-bike-demand-regression/
 │
 ├── data/
 │   ├── raw/
-│   │   └── SeoulBikeData.csv
 │   └── processed/
-│       ├── seoul_bike_analysis.csv
-│       └── seoul_bike_cleaned.csv
 │
 ├── notebooks/
 │   └── seoul_bike_regression.ipynb
 │
 ├── reports/
-│   └── seoul_bike_regression_report.docx
+│   ├── seoul_bike_regression_report.docx
+│   └── seoul_bike_regression_report.pdf
 │
 ├── figures/
 │   ├── demand_distribution.png
@@ -101,311 +83,155 @@ seoul-bike-demand-regression/
 
 ## Methodology
 
-The project follows these main steps:
+The project follows these stages:
 
-1. Load and inspect the original dataset.
-2. Standardize column names.
-3. Convert the date variable to a datetime format.
-4. Check missing values, duplicates, and invalid values.
-5. Extract day-of-week information.
-6. Encode categorical variables using dummy variables.
-7. Sort observations by date and hour.
-8. Divide the dataset chronologically into training and testing sets.
-9. Train a multiple linear regression model.
-10. Evaluate predictive performance using R-squared, MAE, and RMSE.
-11. Fit an Ordinary Least Squares model to obtain coefficients, p-values, and confidence intervals.
-12. Examine residual behavior and regression limitations.
+1. Data loading and inspection
+2. Data cleaning and preprocessing
+3. Feature engineering
+4. Exploratory Data Analysis
+5. Multiple Linear Regression
+6. Statistical significance testing
+7. Model evaluation
+8. Residual diagnostics
+9. Business interpretation
 
-### Why a Chronological Split Was Used
+For evaluation, the first 80% of observations were used for training and the final 20% were used for testing, preserving the chronological structure of the data.
 
-The dataset contains hourly observations ordered over time. A random train-test split could place nearby observations in both sets and produce an overly optimistic performance estimate.
+---
 
-The first 80% of the observations were therefore used for training, while the final 20% were used for testing.
+## Exploratory Analysis
+
+### Average Bike Rental Demand by Hour
+
+![Average Bike Rental Demand by Hour](figures changes substantially throughout the day. Demand typically peaks during commuting periods, illustrating the importance of temporal features in demand forecasting.
 
 ---
 
 ## Model Performance
 
-| Metric | Result |
-|---|---:|
-| Training observations | 7,008 |
-| Testing observations | 1,752 |
-| Training R-squared | 0.5535 |
-| Testing R-squared | 0.5511 |
-| Adjusted R-squared | 0.5522 |
+| Metric | Value |
+|----------|----------:|
+| Training R² | 0.5535 |
+| Testing R² | 0.5511 |
+| Adjusted R² | 0.5522 |
 | Test MAE | 309.67 |
 | Test RMSE | 410.92 |
-| F-statistic | 433.1127 |
-| Overall model p-value | < 0.001 |
-| Durbin-Watson statistic | 0.4923 |
+| F-statistic | 433.11 |
+| Model p-value | < 0.001 |
+| Durbin-Watson | 0.4923 |
 
-The test R-squared of **0.5511** indicates that approximately **55.1% of the variation in bike rental demand in the chronological test period was explained by the predictors included in the model**.
+### Interpretation
 
-The difference between training and test R-squared was only approximately 0.0024. This indicates stable performance on the later test observations and provides no obvious evidence of conventional overfitting.
+The model explains approximately **55.1% of the variation** observed in unseen hourly bike demand data.
 
-The test MAE of 309.67 means that the predictions differed from the actual hourly rental counts by approximately 310 bikes on average, without considering the direction of the error.
-
----
-
-## Exploratory Data Analysis
-
-### Distribution of Bike Rental Demand
-
-figures/demand_distribution.png
-
-The rented-bike-count distribution is right-skewed. Lower and moderate demand levels occur more frequently than very high rental counts.
-
----
-
-### Average Demand by Hour
-
-![Average bike rental demand by hour](figures changes substantially throughout the day. The hourly pattern indicates that demand cannot be fully explained by weather variables alone.
-
-A single linear hour coefficient provides a simplified representation of this pattern. Future versions could model hour as a categorical or cyclical variable.
-
----
-
-### Correlation Matrix
-
-figures/correlation_heatmap.png
-
-The correlation matrix shows the pairwise relationships among numerical variables. Temperature, humidity, dew-point temperature, and solar radiation contain related weather information.
-
-Correlation does not establish causation and does not account for the effects of other predictors included in the regression model.
-
----
-
-### Seasonal Demand
-
-figures/seasonal_demand.png
-
-Bike rental demand varies across seasons. The fitted model found statistically significant differences for winter, spring, and summer relative to the omitted reference season.
-
----
-
-## Regression Results
-
-### Selected Statistically Significant Variables
-
-| Variable | Coefficient | P-value | Interpretation |
-|---|---:|---:|---|
-| Functioning day: Yes | 912.11 | < 0.001 | Operational periods had substantially higher expected demand than non-functioning periods. |
-| Hour | 27.88 | < 0.001 | A one-hour increase was associated with approximately 27.9 additional rentals under the linear specification. |
-| Rainfall | -58.81 | < 0.001 | An additional millimetre of rainfall was associated with approximately 58.8 fewer rentals. |
-| Winter | -400.19 | < 0.001 | Winter had lower expected demand than the reference season. |
-| Solar radiation | -83.56 | < 0.001 | Solar radiation had a negative conditional coefficient after controlling for the other predictors. |
-| Humidity | -9.69 | < 0.001 | A one-percentage-point increase in humidity was associated with approximately 9.7 fewer rentals. |
-| Sunday | -163.73 | < 0.001 | Sunday had lower expected demand than the reference weekday. |
-| Temperature | 19.53 | < 0.001 | A one-degree Celsius increase was associated with approximately 19.5 additional rentals. |
-| No Holiday | 114.64 | < 0.001 | Non-holidays had higher expected demand than holidays. |
-| Wind speed | 22.52 | < 0.001 | Wind speed had a positive conditional coefficient in the fitted model. |
-| Snowfall | 52.45 | < 0.001 | Snowfall had a positive conditional coefficient after controlling for other variables. |
-
-The coefficients represent conditional associations while holding the other variables constant. They should not be interpreted as causal effects.
-
-Raw coefficient magnitudes should also not be directly compared as measures of importance because the predictors use different units.
-
-The complete coefficient results, including standard errors, t-statistics, p-values, and 95% confidence intervals, are available in:
-
-```text
-results/coefficient_results.csv
-```
+Training and testing R² values are nearly identical, indicating stable predictive performance without obvious overfitting.
 
 ---
 
 ## Actual vs Predicted Demand
 
-![Actualactual_vs_predicted.png
+![Actual vs al_vs_predicted.png
 
-Points close to the diagonal line represent accurate predictions. Larger deviations from the line represent larger prediction errors.
+The figure above compares actual bike rental demand against model predictions.
 
-The linear model captures a meaningful portion of demand variation, but it may have difficulty representing extreme or nonlinear demand patterns.
+Observations close to the diagonal line indicate accurate predictions, while greater distances indicate larger model errors.
 
 ---
 
-## Residual Analysis
+## Most Significant Variables
 
-figures/residual_plot.png
+| Variable | Coefficient | P-value |
+|----------|----------:|----------:|
+| Functioning Day (Yes) | 912.11 | < 0.001 |
+| Hour | 27.88 | < 0.001 |
+| Rainfall | -58.81 | < 0.001 |
+| Winter | -400.19 | < 0.001 |
+| Solar Radiation | -83.56 | < 0.001 |
+| Humidity | -9.69 | < 0.001 |
+| Sunday | -163.73 | < 0.001 |
+| Temperature | 19.53 | < 0.001 |
+| No Holiday | 114.64 | < 0.001 |
 
-The residual plot can be used to identify:
+### Key Insights
 
-- Nonlinear patterns
-- Unequal residual variance
-- Groups or clusters
-- Extreme prediction errors
-- Systematic underprediction or overprediction
-
-The Durbin-Watson statistic was **0.4923**, which indicates substantial positive autocorrelation in the residuals.
-
-This means that prediction errors from nearby hourly observations are related. The independence assumption of ordinary least squares is therefore not fully satisfied.
-
-Consequently, the OLS p-values should be treated as baseline inferential results rather than definitive time-series inference.
+- Operational hours produce significantly higher demand.
+- Demand increases with temperature.
+- Rainfall reduces bike rentals.
+- Winter shows lower demand than the reference season.
+- Demand varies across days of the week.
+- Holiday and operational status significantly affect usage patterns.
 
 ---
 
 ## Key Findings
 
-- The regression model explained approximately 55.1% of the variation in chronological test-period demand.
-- Training and test performance were nearly identical.
-- Functioning-day status had the largest raw coefficient.
-- Rainfall, humidity, and winter were associated with lower expected demand.
-- Temperature and hour were associated with higher expected demand.
-- The overall regression was statistically significant.
-- The residuals showed substantial positive autocorrelation.
-- The fitted model is useful as an interpretable baseline but does not fully capture the temporal and nonlinear structure of hourly bike demand.
+- The model successfully predicts hourly bike demand using weather and temporal variables.
+- Approximately 55% of demand variability is explained by the model.
+- Functioning-day status is the strongest predictor.
+- Rainfall and humidity negatively impact demand.
+- Temperature positively impacts demand.
+- The model performs consistently on unseen data.
 
 ---
 
 ## Limitations
 
-1. **Residual autocorrelation**
-
-   Hourly observations are temporally related, and the low Durbin-Watson statistic shows that the independence assumption is not fully satisfied.
-
-2. **Linear treatment of hour**
-
-   Bike demand often contains morning and evening peaks. A single linear hour coefficient cannot completely represent this pattern.
-
-3. **Correlated weather variables**
-
-   Temperature, humidity, dew point, and solar radiation may contain overlapping information, influencing coefficient size and direction.
-
-4. **Operational-status effect**
-
-   Functioning-day status distinguishes system closures from normal customer demand and therefore has a very large coefficient.
-
-5. **Omitted variables**
-
-   The dataset does not include station-level bike availability, public events, transit disruptions, or detailed customer information.
-
-6. **Association, not causation**
-
-   The coefficients describe conditional statistical relationships and should not be interpreted as causal effects.
+- Residual autocorrelation exists (Durbin-Watson = 0.4923).
+- Hourly demand patterns may be nonlinear.
+- Some weather variables are correlated.
+- External factors such as events and bike availability are not included.
+- Model coefficients indicate associations rather than causation.
 
 ---
 
-## How to Run the Project
+## Future Improvements
 
-### 1. Clone the repository
+Potential future enhancements include:
+
+- Ridge Regression
+- Lasso Regression
+- Time Series Cross Validation
+- Lag Features
+- Feature Scaling
+- Random Forest Regression
+- Gradient Boosting
+- XGBoost
+- Streamlit Deployment
+
+---
+
+## How to Run
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/seoul-bike-demand-regression.git
-```
+git clone https://github.com/YOUR-USERNAME/seoul-bike-demand-prediction.git
 
-### 2. Open the project directory
+cd seoul-bike-demand-prediction
 
-```bash
-cd seoul-bike-demand-regression
-```
-
-### 3. Create a virtual environment
-
-```bash
 python -m venv .venv
-```
 
-### 4. Activate the virtual environment
-
-#### Windows Command Prompt
-
-```bat
-.venv\Scripts\activate
-```
-
-#### Windows PowerShell
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-#### Linux or macOS
-
-```bash
-source .venv/bin/activate
-```
-
-### 5. Install dependencies
-
-```bash
 python -m pip install -r requirements.txt
 ```
 
-### 6. Open the notebook
-
-Open the following notebook in VS Code or Jupyter:
+Open:
 
 ```text
 notebooks/seoul_bike_regression.ipynb
 ```
 
-Run the notebook from top to bottom.
+and run all cells.
 
 ---
 
 ## Technologies Used
 
 - Python
-- pandas
+- Pandas
 - NumPy
 - Matplotlib
 - Seaborn
-- scikit-learn
-- statsmodels
+- Scikit-Learn
+- Statsmodels
 - Jupyter Notebook
-- Microsoft Word
-
----
-
-## Repository Outputs
-
-The main outputs are:
-
-- Complete Jupyter notebook
-- Cleaned datasets
-- Exploratory-analysis figures
-- Regression coefficient table
-- Predictive evaluation metrics
-- Microsoft Word report
-
----
-
-## Future Improvements
-
-Future versions of the project could:
-
-- Treat hour as a categorical variable
-- Create cyclical sine and cosine hour features
-- Add lagged-demand variables
-- Add rolling averages
-- Use time-series cross-validation
-- Calculate heteroscedasticity and autocorrelation-consistent standard errors
-- Compare linear regression with Ridge and Lasso regression
-- Compare performance with Random Forest, Gradient Boosting, or XGBoost
-- Build a Streamlit dashboard for interactive predictions
-- Separate normal operating demand from system-closure periods
-- Add standardized coefficients or permutation importance
-
----
-
-## Author
-
-**Mohammad Umar Shaikh Mohd Abdul Sattar**
-
-Graduate Engineer Trainee with interests in data science, machine learning, artificial intelligence, and enterprise technology.
-
----
-
-## License
-
-This project is intended for educational and portfolio purposes.
-
-See the `LICENSE` file for reuse conditions.
-
----
-
-## Acknowledgements
-
-The dataset was obtained from the UCI Machine Learning Repository. Credit belongs to the original dataset creators and contributors.
 
 ---
 
@@ -413,7 +239,24 @@ The dataset was obtained from the UCI Machine Learning Repository. Credit belong
 
 UCI Machine Learning Repository. (2020).
 
-Seoul Bike Sharing Demand Data Set.
+Seoul Bike Sharing Demand Dataset.
 
 Available at:
+
 https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+
+---
+
+## Author
+
+**Mohammad Umar Shaikh Mohd Abdul Sattar**
+
+Graduate Engineer Trainee | Data Science | Machine Learning | AI
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+See the LICENSE file for details.

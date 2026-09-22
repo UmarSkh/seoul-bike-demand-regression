@@ -1,0 +1,49 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py*class
+
+# Virtual environments
+.ven*/
+venv/
+env/
+
+* Jupyter
+.ip*nb_checkpoints/
+
+* VS Code
+.vscode/
+
+# Operating sys*em files
+.DS_Store
+Thumbs.db
+deskt*p.ini
+
+# Temporary files
+*.tmp
+*.t*mp
+*.log
+*.bak*
+# Microsoft Office temporary file*
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# Generated rendering or QA files
+rendered/
+output/
+temp/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Test and coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Optional local environment files
+.env
+.env.*

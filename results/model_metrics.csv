@@ -1,0 +1,11 @@
+metric,value
+training_observations,7008
+testing_observations,1752
+training_r_squared,0.5535
+testing_r_squared,0.5511
+adjusted_r_squared,0.5522
+test_mae,309.67
+test_rmse,410.92
+f_statistic,433.1127
+f_test_p_value,<0.001
+durbin_watson,0.4923
